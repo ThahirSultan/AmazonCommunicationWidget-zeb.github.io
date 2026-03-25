@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +38,7 @@
             font-size: 8rem;
             font-weight: bold;
             color: var(--grass-green);
-            text-shadow: 
+            text-shadow:
                 0 0 10px var(--grass-green),
                 0 0 20px var(--grass-green),
                 0 0 30px var(--grass-green);
@@ -49,7 +50,7 @@
 
         .zeb-text:hover {
             color: #ffffff;
-            text-shadow: 
+            text-shadow:
                 0 0 15px var(--grass-green),
                 0 0 25px var(--grass-green),
                 0 0 35px var(--grass-green),
@@ -61,15 +62,19 @@
             from {
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--swamp-green);
             }
+
             to {
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px var(--grass-green);
             }
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.8;
             }
@@ -85,10 +90,13 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px) rotate(0deg);
                 opacity: 0.6;
             }
+
             50% {
                 transform: translateY(-20px) rotate(180deg);
                 opacity: 1;
@@ -101,6 +109,7 @@
                 font-size: 4rem;
                 letter-spacing: 0.3rem;
             }
+
             .zeb-container {
                 padding: 2rem 3rem;
                 margin: 1rem;
@@ -112,14 +121,15 @@
                 font-size: 3rem;
                 letter-spacing: 0.2rem;
             }
+
             .zeb-container {
                 padding: 1.5rem 2rem;
             }
         }
 
-        /* Amazon Connect widget customization */
+        /* Hide the default Amazon Connect floating button */
         #amazon-connect-widget {
-            z-index: 9999 !important;
+            display: none !important;
         }
 
         /* Ensure the widget doesn't interfere with the main content */
@@ -127,12 +137,34 @@
             position: relative;
             z-index: 1;
         }
+
+        .call-btn {
+            margin-top: 2rem;
+            padding: 0.75rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: var(--grass-green);
+            border: 2px solid var(--grass-green);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.1rem;
+        }
+
+        .call-btn:hover {
+            background-color: var(--swamp-green);
+            border-color: var(--grass-green);
+            box-shadow: 0 0 15px var(--grass-green);
+        }
     </style>
 </head>
+
 <body>
     <div class="container-fluid main-content">
         <div class="zeb-container">
             <h1 class="zeb-text" id="zebText">ZEB</h1>
+            <button class="call-btn" id="callBtn" onclick="amazon_connect('open')">Call ZEB</button>
         </div>
     </div>
 
@@ -146,48 +178,53 @@
 
     <!-- Amazon Connect Communications Widget -->
     <script type="text/javascript">
-      (function(w, d, x, id){
-        s=d.createElement('script');
-        s.src='https://nova-sonic-connect-poc.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
-        s.async=1;
-        s.id=id;
-        d.getElementsByTagName('head')[0].appendChild(s);
-        w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
-      })(window, document, 'amazon_connect', 'a2bc9174-3fe1-4ed0-96ae-c945223ab982');
-      
-      // Configure widget styles to match the green theme
-      amazon_connect('styles', { 
-        iconType: 'VOICE', 
-        openChat: { 
-          color: '#ffffff', 
-          backgroundColor: '#7cb342'  // Using grass green from theme
-        }, 
-        closeChat: { 
-          color: '#ffffff', 
-          backgroundColor: '#4a5d23'  // Using swamp green from theme
-        } 
-      });
-      
-      amazon_connect('snippetId', 'QVFJREFIaXdlaTllQXR1SnQyK1JZc1Z3dWE3clBZQjQvWm15emlVb25scEltc3BJNmdHLzJYeTlFRFJicCtxMUY0aGpuekNhQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNbkZjYVMxU2dNVVRmSlI4SkFnRVFnQ3RHZEZMbEVkV2Z4cGptY0dSclBaNVpjT1VZVXVTSmJPWGdySkd4VGxteVNDSVN0dmtEQWl4cTVaQkc6OityU1g0N0U5Y29MK3BDWHhDd0ZsVURjUTRzT3B4NlQyOFNRR0RvbFBFaCt1WmJ5TGszb2pNTGxGcmhPZ21DNzVvdEVFQ3FOTTVBSm0xbWdzemtBUktxcHU0VHN1Y3BnR3Z0RFNsWmx4cU1rK1F4WTM0SmgybkZkaGFYNEl1UnRQeWczdVp6MzJ0UHgycENEdS9FM3hVYzFkWWdXb1dJVT0=');
-      
-      amazon_connect('supportedMessagingContentTypes', [ 
-        'text/plain', 
-        'text/markdown', 
-        'application/vnd.amazonaws.connect.message.interactive', 
-        'application/vnd.amazonaws.connect.message.interactive.response' 
-      ]);
+        (function(w, d, x, id) {
+            s = d.createElement('script');
+            s.src = 'https://nova-sonic-connect-poc.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
+            s.async = 1;
+            s.id = id;
+            d.getElementsByTagName('head')[0].appendChild(s);
+            w[x] = w[x] || function() {
+                (w[x].ac = w[x].ac || []).push(arguments)
+            };
+        })(window, document, 'amazon_connect', 'a2bc9174-3fe1-4ed0-96ae-c945223ab982');
 
-      // Optional: Add authentication callback if JWT security is enabled
-      // Uncomment the following if you have JWT authentication set up
-      /*
-      amazon_connect('authenticate', function(callback) {
-        window.fetch('/token').then(res => {
-          res.json().then(data => {
-            callback(data.data);
+        // Configure widget styles to match the green theme
+        amazon_connect('styles', {
+            iconType: 'VOICE',
+            openChat: {
+                color: '#ffffff',
+                backgroundColor: '#7cb342' // Using grass green from theme
+            },
+            closeChat: {
+                color: '#ffffff',
+                backgroundColor: '#4a5d23' // Using swamp green from theme
+            }
+        });
+
+        amazon_connect('snippetId', 'QVFJREFIaXdlaTllQXR1SnQyK1JZc1Z3dWE3clBZQjQvWm15emlVb25scEltc3BJNmdHLzJYeTlFRFJicCtxMUY0aGpuekNhQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNbkZjYVMxU2dNVVRmSlI4SkFnRVFnQ3RHZEZMbEVkV2Z4cGptY0dSclBaNVpjT1VZVXVTSmJPWGdySkd4VGxteVNDSVN0dmtEQWl4cTVaQkc6OityU1g0N0U5Y29MK3BDWHhDd0ZsVURjUTRzT3B4NlQyOFNRR0RvbFBFaCt1WmJ5TGszb2pNTGxGcmhPZ21DNzVvdEVFQ3FOTTVBSm0xbWdzemtBUktxcHU0VHN1Y3BnR3Z0RFNsWmx4cU1rK1F4WTM0SmgybkZkaGFYNEl1UnRQeWczdVp6MzJ0UHgycENEdS9FM3hVYzFkWWdXb1dJVT0=');
+
+        amazon_connect('supportedMessagingContentTypes', [
+            'text/plain',
+            'text/markdown',
+            'application/vnd.amazonaws.connect.message.interactive',
+            'application/vnd.amazonaws.connect.message.interactive.response'
+        ]);
+
+        // Hide the default floating widget button
+        amazon_connect('hide');
+
+        // Optional: Add authentication callback if JWT security is enabled
+        // Uncomment the following if you have JWT authentication set up
+        /*
+        amazon_connect('authenticate', function(callback) {
+          window.fetch('/token').then(res => {
+            res.json().then(data => {
+              callback(data.data);
+            });
           });
         });
-      });
-      */
+        */
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -195,18 +232,18 @@
         // Interactive effects for ZEB text
         document.addEventListener('DOMContentLoaded', function() {
             const zebText = document.getElementById('zebText');
-            
+
             // Click effect
             zebText.addEventListener('click', function() {
                 this.style.animation = 'none';
                 setTimeout(() => {
                     this.style.animation = 'pulse 3s ease-in-out infinite';
                 }, 100);
-                
+
                 // Create ripple effect
                 createRipple(event);
             });
-            
+
             // Create ripple effect function
             function createRipple(e) {
                 const ripple = document.createElement('div');
@@ -214,7 +251,7 @@
                 const size = 60;
                 const x = e.clientX - rect.left - size / 2;
                 const y = e.clientY - rect.top - size / 2;
-                
+
                 ripple.style.cssText = `
                     position: absolute;
                     width: ${size}px;
@@ -227,15 +264,15 @@
                     animation: ripple 0.6s ease-out;
                     pointer-events: none;
                 `;
-                
+
                 zebText.style.position = 'relative';
                 zebText.appendChild(ripple);
-                
+
                 setTimeout(() => {
                     ripple.remove();
                 }, 600);
             }
-            
+
             // Add ripple animation
             const style = document.createElement('style');
             style.textContent = `
@@ -247,12 +284,12 @@
                 }
             `;
             document.head.appendChild(style);
-            
+
             // Random color variations on mouse movement
             document.addEventListener('mousemove', function(e) {
                 const x = (e.clientX / window.innerWidth) * 100;
                 const y = (e.clientY / window.innerHeight) * 100;
-                
+
                 document.body.style.background = `
                     radial-gradient(circle at ${x}% ${y}%, 
                     var(--grass-green) 0%, 
@@ -260,7 +297,7 @@
                     #2d3d0f 100%)
                 `;
             });
-            
+
             // Keyboard interaction
             document.addEventListener('keydown', function(e) {
                 if (e.code === 'Space' || e.code === 'Enter') {
@@ -270,7 +307,7 @@
 
             // Amazon Connect widget integration message
             console.log('Amazon Connect Communications Widget loaded successfully!');
-            
+
             // Optional: Listen for widget events
             window.addEventListener('message', function(event) {
                 if (event.data && event.data.type === 'amazonConnectChatWidget') {
@@ -280,4 +317,5 @@
         });
     </script>
 </body>
+
 </html>
