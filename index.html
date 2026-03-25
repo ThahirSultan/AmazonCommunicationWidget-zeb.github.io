@@ -164,7 +164,7 @@
     <div class="container-fluid main-content">
         <div class="zeb-container">
             <h1 class="zeb-text" id="zebText">ZEB</h1>
-            <button class="call-btn" id="callBtn" onclick="amazon_connect('open')">Call ZEB</button>
+            <button class="call-btn" id="callBtn">Call ZEB</button>
         </div>
     </div>
 
@@ -211,20 +211,15 @@
             'application/vnd.amazonaws.connect.message.interactive.response'
         ]);
 
-        // Hide the default floating widget button
-        amazon_connect('hide');
+        // Once the widget is fully loaded, hide its default floating button
+        amazon_connect('onLoad', function() {
+            amazon_connect('hide');
 
-        // Optional: Add authentication callback if JWT security is enabled
-        // Uncomment the following if you have JWT authentication set up
-        /*
-        amazon_connect('authenticate', function(callback) {
-          window.fetch('/token').then(res => {
-            res.json().then(data => {
-              callback(data.data);
+            // Now safe to wire up the custom button
+            document.getElementById('callBtn').addEventListener('click', function() {
+                amazon_connect('open');
             });
-          });
         });
-        */
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
