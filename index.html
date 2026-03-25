@@ -6,249 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEB</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --swamp-green: #4a5d23;
-            --grass-green: #7cb342;
-        }
-
-        body {
-            background: linear-gradient(135deg, var(--swamp-green) 0%, var(--grass-green) 50%, var(--swamp-green) 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .zeb-container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 4rem 6rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 3px solid var(--grass-green);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        .zeb-text {
-            font-size: 8rem;
-            font-weight: bold;
-            color: var(--grass-green);
-            text-shadow:
-                0 0 10px var(--grass-green),
-                0 0 20px var(--grass-green),
-                0 0 30px var(--grass-green);
-            letter-spacing: 0.5rem;
-            animation: pulse 3s ease-in-out infinite;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .zeb-text:hover {
-            color: #ffffff;
-            text-shadow:
-                0 0 15px var(--grass-green),
-                0 0 35px var(--grass-green),
-                0 0 45px var(--grass-green);
-            transform: scale(1.1);
-        }
-
-        /* Call controls panel */
-        .call-controls {
-            margin-top: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .call-status {
-            font-size: 0.95rem;
-            color: #aaaaaa;
-            letter-spacing: 0.05rem;
-            min-height: 1.2rem;
-        }
-
-        .call-status.active {
-            color: var(--grass-green);
-        }
-
-        .call-status.error {
-            color: #e53935;
-        }
-
-        /* Primary action buttons row */
-        .btn-row {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .ctrl-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.75rem 1.25rem;
-            border-radius: 50px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.05rem;
-            transition: all 0.25s ease;
-            min-width: 100px;
-        }
-
-        .ctrl-btn svg {
-            width: 22px;
-            height: 22px;
-        }
-
-        /* Start call */
-        .btn-start {
-            background-color: var(--grass-green);
-            color: #ffffff;
-            border-color: var(--grass-green);
-        }
-
-        .btn-start:hover:not(:disabled) {
-            background-color: #5a8a2a;
-            box-shadow: 0 0 15px var(--grass-green);
-        }
-
-        /* End call */
-        .btn-end {
-            background-color: #e53935;
-            color: #ffffff;
-            border-color: #e53935;
-        }
-
-        .btn-end:hover:not(:disabled) {
-            background-color: #b71c1c;
-            box-shadow: 0 0 15px #e53935;
-        }
-
-        /* Toggle buttons (mute / video) */
-        .btn-toggle {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-toggle:hover:not(:disabled) {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-toggle.active {
-            background-color: var(--grass-green);
-            border-color: var(--grass-green);
-        }
-
-        .btn-toggle.off {
-            background-color: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.15);
-            color: #888888;
-        }
-
-        .ctrl-btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        /* Video element for local preview */
-        #local-video {
-            width: 220px;
-            height: 140px;
-            border-radius: 10px;
-            border: 2px solid var(--grass-green);
-            background: #000;
-            display: none;
-            object-fit: cover;
-        }
-
-        @keyframes glow {
-            from {
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--swamp-green);
-            }
-
-            to {
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px var(--grass-green);
-            }
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.8;
-            }
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--grass-green);
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px) rotate(0deg);
-                opacity: 0.6;
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .zeb-text {
-                font-size: 4rem;
-            }
-
-            .zeb-container {
-                padding: 2rem 3rem;
-                margin: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .zeb-text {
-                font-size: 3rem;
-            }
-
-            .zeb-container {
-                padding: 1.5rem 2rem;
-            }
-
-            .btn-row {
-                gap: 0.6rem;
-            }
-
-            .ctrl-btn {
-                min-width: 80px;
-                font-size: 0.75rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 
 <body>
 
+    <!-- Floating particles -->
     <div class="particle" style="top:10%;left:10%;width:4px;height:4px;animation-delay:0s"></div>
     <div class="particle" style="top:20%;right:20%;width:6px;height:6px;animation-delay:1s"></div>
     <div class="particle" style="bottom:30%;left:30%;width:3px;height:3px;animation-delay:2s"></div>
@@ -262,294 +25,45 @@
         <div class="call-controls">
             <div class="call-status" id="callStatus">Ready to connect</div>
 
-            <!-- Local video preview (shown when video is enabled) -->
+            <!-- Local video preview -->
             <video id="local-video" autoplay muted playsinline></video>
 
-            <!-- Control buttons -->
+            <!-- Start / End row -->
             <div class="btn-row">
-
-                <!-- Start Call -->
                 <button class="ctrl-btn btn-start" id="btnStart">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
                     </svg>
                     Start Call
                 </button>
-
-                <!-- End Call -->
                 <button class="ctrl-btn btn-end" id="btnEnd" disabled>
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08C.11 12.9 0 12.65 0 12.37c0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.66c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z" />
                     </svg>
                     End Call
                 </button>
-
             </div>
 
+            <!-- Mute / Video row -->
             <div class="btn-row">
-
-                <!-- Mute / Unmute -->
                 <button class="ctrl-btn btn-toggle active" id="btnMute" disabled>
-                    <svg id="iconMute" viewBox="0 0 24 24" fill="currentColor">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                     </svg>
                     <span id="labelMute">Mute</span>
                 </button>
-
-                <!-- Enable / Disable Video -->
                 <button class="ctrl-btn btn-toggle off" id="btnVideo" disabled>
-                    <svg id="iconVideo" viewBox="0 0 24 24" fill="currentColor">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18 10.48V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4.48l4 3.98v-11l-4 3.98zm-2-.79V18H4V6h12v3.69z" />
                     </svg>
                     <span id="labelVideo">Start Video</span>
                 </button>
-
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script type="module">
-        import {
-            ConsoleLogger,
-            DefaultDeviceController,
-            DefaultMeetingSession,
-            LogLevel,
-            MeetingSessionConfiguration,
-            MeetingSessionStatusCode
-        } from 'https://esm.sh/amazon-chime-sdk-js@3';
-
-        const API_ENDPOINT = 'https://1527omusic.execute-api.us-east-1.amazonaws.com/dev/communication-widget';
-
-        // --- State ---
-        let meetingSession = null;
-        let isMuted       = false;
-        let isVideoOn     = false;
-
-        // --- DOM refs ---
-        const btnStart    = document.getElementById('btnStart');
-        const btnEnd      = document.getElementById('btnEnd');
-        const btnMute     = document.getElementById('btnMute');
-        const btnVideo    = document.getElementById('btnVideo');
-        const callStatus  = document.getElementById('callStatus');
-        const localVideo  = document.getElementById('local-video');
-        const labelMute   = document.getElementById('labelMute');
-        const labelVideo  = document.getElementById('labelVideo');
-
-        // --- Helpers ---
-        function setStatus(msg, type = '') {
-            callStatus.textContent = msg;
-            callStatus.className = 'call-status' + (type ? ' ' + type : '');
-        }
-
-        function setCallActive(active) {
-            btnStart.disabled = active;
-            btnEnd.disabled   = !active;
-            btnMute.disabled  = !active;
-            btnVideo.disabled = !active;
-        }
-
-        // --- Start Call ---
-        btnStart.addEventListener('click', async () => {
-            setStatus('Connecting...', '');
-            btnStart.disabled = true;
-
-            try {
-                // 1. Call Lambda via API Gateway
-                const res = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        ParticipantDetails: { DisplayName: 'ZEB Customer' }
-                    })
-                });
-
-                if (!res.ok) throw new Error(`API error ${res.status}`);
-                const data = await res.json();
-
-                const { Meeting, Attendee } = data.ConnectionData;
-
-                // 2. Configure Chime SDK session
-                const logger = new ConsoleLogger('ZEB-Chime', LogLevel.WARN);
-                const deviceController = new DefaultDeviceController(logger);
-                const config = new MeetingSessionConfiguration(
-                    { Meeting },
-                    { Attendee }
-                );
-
-                meetingSession = new DefaultMeetingSession(config, logger, deviceController);
-
-                // 3. Select default audio input (microphone)
-                const audioInputs = await meetingSession.audioVideo.listAudioInputDevices();
-                if (audioInputs.length > 0) {
-                    await meetingSession.audioVideo.startAudioInput(audioInputs[0].deviceId);
-                }
-
-                // 4. Bind audio output to a hidden element
-                const audioEl = document.createElement('audio');
-                audioEl.style.display = 'none';
-                document.body.appendChild(audioEl);
-                meetingSession.audioVideo.bindAudioElement(audioEl);
-
-                // 5. Listen for session end
-                meetingSession.audioVideo.addObserver({
-                    audioVideoDidStop(status) {
-                        const ended = status.statusCode() === MeetingSessionStatusCode.MeetingEnded
-                                   || status.statusCode() === MeetingSessionStatusCode.Left;
-                        if (ended) {
-                            setStatus('Call ended', '');
-                            setCallActive(false);
-                            stopVideoLocal();
-                            meetingSession = null;
-                        }
-                    }
-                });
-
-                // 6. Start the WebRTC audio session
-                meetingSession.audioVideo.start();
-
-                setStatus('Connected', 'active');
-                setCallActive(true);
-                isMuted  = false;
-                isVideoOn = false;
-                syncMuteUI();
-                syncVideoUI();
-
-            } catch (err) {
-                console.error('Start call failed:', err);
-                setStatus('Failed to connect — ' + err.message, 'error');
-                btnStart.disabled = false;
-            }
-        });
-
-        // --- End Call ---
-        btnEnd.addEventListener('click', async () => {
-            if (!meetingSession) return;
-            stopVideoLocal();
-            meetingSession.audioVideo.stop();
-            setStatus('Call ended', '');
-            setCallActive(false);
-            meetingSession = null;
-        });
-
-        // --- Mute / Unmute ---
-        btnMute.addEventListener('click', () => {
-            if (!meetingSession) return;
-            if (isMuted) {
-                meetingSession.audioVideo.realtimeUnmuteLocalAudio();
-                isMuted = false;
-            } else {
-                meetingSession.audioVideo.realtimeMuteLocalAudio();
-                isMuted = true;
-            }
-            syncMuteUI();
-        });
-
-        function syncMuteUI() {
-            if (isMuted) {
-                labelMute.textContent = 'Unmute';
-                btnMute.classList.remove('active');
-                btnMute.classList.add('off');
-            } else {
-                labelMute.textContent = 'Mute';
-                btnMute.classList.add('active');
-                btnMute.classList.remove('off');
-            }
-        }
-
-        // --- Enable / Disable Video ---
-        btnVideo.addEventListener('click', async () => {
-            if (!meetingSession) return;
-            if (isVideoOn) {
-                await stopVideoLocal();
-            } else {
-                await startVideoLocal();
-            }
-        });
-
-        async function startVideoLocal() {
-            try {
-                const videoInputs = await meetingSession.audioVideo.listVideoInputDevices();
-                if (videoInputs.length === 0) {
-                    setStatus('No camera found', 'error');
-                    return;
-                }
-                await meetingSession.audioVideo.startVideoInput(videoInputs[0].deviceId);
-                meetingSession.audioVideo.startLocalVideoTile();
-
-                // Bind local tile to the video element
-                meetingSession.audioVideo.addObserver({
-                    videoTileDidUpdate(tileState) {
-                        if (tileState.localTile) {
-                            meetingSession.audioVideo.bindVideoElement(tileState.tileId, localVideo);
-                            localVideo.style.display = 'block';
-                        }
-                    }
-                });
-
-                isVideoOn = true;
-                syncVideoUI();
-            } catch (err) {
-                console.error('Video start failed:', err);
-                setStatus('Camera error — ' + err.message, 'error');
-            }
-        }
-
-        async function stopVideoLocal() {
-            if (!meetingSession) return;
-            try {
-                meetingSession.audioVideo.stopLocalVideoTile();
-                await meetingSession.audioVideo.stopVideoInput();
-            } catch (_) {}
-            localVideo.style.display = 'none';
-            localVideo.srcObject = null;
-            isVideoOn = false;
-            syncVideoUI();
-        }
-
-        function syncVideoUI() {
-            if (isVideoOn) {
-                labelVideo.textContent = 'Stop Video';
-                btnVideo.classList.add('active');
-                btnVideo.classList.remove('off');
-            } else {
-                labelVideo.textContent = 'Start Video';
-                btnVideo.classList.remove('active');
-                btnVideo.classList.add('off');
-            }
-        }
-
-        // --- ZEB text ripple effect ---
-        const zebText = document.getElementById('zebText');
-        zebText.addEventListener('click', function(e) {
-            const ripple = document.createElement('div');
-            const rect = zebText.getBoundingClientRect();
-            const size = 60;
-            ripple.style.cssText = `
-                position:absolute;width:${size}px;height:${size}px;
-                left:${e.clientX - rect.left - size/2}px;
-                top:${e.clientY - rect.top - size/2}px;
-                background:radial-gradient(circle,var(--grass-green) 0%,transparent 70%);
-                border-radius:50%;transform:scale(0);
-                animation:ripple 0.6s ease-out;pointer-events:none;
-            `;
-            zebText.style.position = 'relative';
-            zebText.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
-
-        const rippleStyle = document.createElement('style');
-        rippleStyle.textContent = `@keyframes ripple { to { transform:scale(4); opacity:0; } }`;
-        document.head.appendChild(rippleStyle);
-
-        // --- Mouse parallax background ---
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, var(--grass-green) 0%, var(--swamp-green) 50%, #2d3d0f 100%)`;
-        });
-    </script>
+    <script type="module" src="scripts/main.js"></script>
 
 </body>
 
