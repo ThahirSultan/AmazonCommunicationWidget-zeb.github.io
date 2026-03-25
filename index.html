@@ -127,11 +127,6 @@
             }
         }
 
-        /* Hide the default Amazon Connect floating button */
-        #amazon-connect-widget {
-            display: none !important;
-        }
-
         /* Ensure the widget doesn't interfere with the main content */
         .main-content {
             position: relative;
@@ -176,49 +171,127 @@
     <div class="particle" style="top: 50%; left: 5%; width: 4px; height: 4px; animation-delay: 4s;"></div>
     <div class="particle" style="top: 70%; right: 5%; width: 3px; height: 3px; animation-delay: 5s;"></div>
 
-    <!-- Amazon Connect Communications Widget -->
-    <script type="text/javascript">
-        (function(w, d, x, id) {
-            s = d.createElement('script');
-            s.src = 'https://nova-sonic-connect-poc.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
-            s.async = 1;
-            s.id = id;
-            d.getElementsByTagName('head')[0].appendChild(s);
-            w[x] = w[x] || function() {
-                (w[x].ac = w[x].ac || []).push(arguments)
-            };
-        })(window, document, 'amazon_connect', 'a2bc9174-3fe1-4ed0-96ae-c945223ab982');
+    <!-- ChatJS loaded locally -->
+    <script src="libs/amazon-connect-chat.js"></script>
 
-        // Configure widget styles to match the green theme
-        amazon_connect('styles', {
-            iconType: 'VOICE',
-            openChat: {
-                color: '#ffffff',
-                backgroundColor: '#7cb342' // Using grass green from theme
+    <!-- Amazon Connect - Direct Hosted Backend Integration -->
+    <script type="text/javascript">
+        const AC_CONFIG = {
+            instanceAlias: 'nova-sonic-connect-poc',
+            widgetId: 'a2bc9174-3fe1-4ed0-96ae-c945223ab982',
+            snippetId: 'QVFJREFIaXdlaTllQXR1SnQyK1JZc1Z3dWE3clBZQjQvWm15emlVb25scEltc3BJNmdHLzJYeTlFRFJicCtxMUY0aGpuekNhQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNbkZjYVMxU2dNVVRmSlI4SkFnRVFnQ3RHZEZMbEVkV2Z4cGptY0dSclBaNVpjT1VZVXVTSmJPWGdySkd4VGxteVNDSVN0dmtEQWl4cTVaQkc6OityU1g0N0U5Y29MK3BDWHhDd0ZsVURjUTRzT3B4NlQyOFNRR0RvbFBFaCt1WmJ5TGszb2pNTGxGcmhPZ21DNzVvdEVFQ3FOTTVBSm0xbWdzemtBUktxcHU0VHN1Y3BnR3Z0RFNsWmx4cU1rK1F4WTM0SmgybkZkaGFYNEl1UnRQeWczdVp6MzJ0UHgycENEdS9FM3hVYzFkWWdXb1dJVT0=',
+            region: 'us-east-1'
+        };
+
+        let activeChatSession = null;
+
+        connect.ChatSession.setGlobalConfig({
+            region: AC_CONFIG.region,
+            loggerConfig: {
+                level: connect.ChatSession.LogLevel.INFO
             },
-            closeChat: {
-                color: '#ffffff',
-                backgroundColor: '#4a5d23' // Using swamp green from theme
-            }
         });
 
-        amazon_connect('snippetId', 'QVFJREFIaXdlaTllQXR1SnQyK1JZc1Z3dWE3clBZQjQvWm15emlVb25scEltc3BJNmdHLzJYeTlFRFJicCtxMUY0aGpuekNhQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNbkZjYVMxU2dNVVRmSlI4SkFnRVFnQ3RHZEZMbEVkV2Z4cGptY0dSclBaNVpjT1VZVXVTSmJPWGdySkd4VGxteVNDSVN0dmtEQWl4cTVaQkc6OityU1g0N0U5Y29MK3BDWHhDd0ZsVURjUTRzT3B4NlQyOFNRR0RvbFBFaCt1WmJ5TGszb2pNTGxGcmhPZ21DNzVvdEVFQ3FOTTVBSm0xbWdzemtBUktxcHU0VHN1Y3BnR3Z0RFNsWmx4cU1rK1F4WTM0SmgybkZkaGFYNEl1UnRQeWczdVp6MzJ0UHgycENEdS9FM3hVYzFkWWdXb1dJVT0=');
+        async function startCall() {
+            const btn = document.getElementById('callBtn');
 
-        amazon_connect('supportedMessagingContentTypes', [
-            'text/plain',
-            'text/markdown',
-            'application/vnd.amazonaws.connect.message.interactive',
-            'application/vnd.amazonaws.connect.message.interactive.response'
-        ]);
+            // Prevent double-clicks while connecting
+            if (activeChatSession) {
+                console.log('Session already active');
+                return;
+            }
 
-        // Once the widget is fully loaded, hide its default floating button
-        amazon_connect('onLoad', function() {
-            amazon_connect('hide');
+            btn.disabled = true;
+            btn.textContent = 'Connecting...';
 
-            // Now safe to wire up the custom button
-            document.getElementById('callBtn').addEventListener('click', function() {
-                amazon_connect('open');
-            });
+            try {
+                // Step 1: Call the Amazon-hosted backend to start the contact
+                const endpoint = `https://${AC_CONFIG.instanceAlias}.my.connect.aws/connectwidget/api/${AC_CONFIG.widgetId}/start`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-amz-snippet-id': AC_CONFIG.snippetId
+                    },
+                    body: JSON.stringify({
+                        SupportedMessagingContentTypes: ['text/plain']
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Backend responded with ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Chat contact started:', data);
+
+                // Step 2: Extract credentials - adjust path based on actual response shape
+                const chatDetails = data.startChatResult || (data.data && data.data.startChatResult) || data;
+
+                // Step 3: Create and connect the ChatJS session
+                activeChatSession = connect.ChatSession.create({
+                    chatDetails: {
+                        contactId: chatDetails.ContactId,
+                        participantId: chatDetails.ParticipantId,
+                        participantToken: chatDetails.ParticipantToken,
+                    },
+                    options: {
+                        region: AC_CONFIG.region
+                    },
+                    type: connect.ChatSession.SessionTypes.CUSTOMER,
+                    disableCSM: true
+                });
+
+                await activeChatSession.connect();
+                console.log('ChatJS session connected');
+
+                btn.textContent = 'End Call';
+                btn.disabled = false;
+                btn.onclick = endCall;
+
+                // Step 4: Handle session events
+                activeChatSession.onConnectionEstablished(() => {
+                    console.log('Connection established');
+                });
+
+                activeChatSession.onEnded(() => {
+                    console.log('Call ended by agent');
+                    resetButton();
+                });
+
+                activeChatSession.onConnectionLost(() => {
+                    console.warn('Connection lost');
+                });
+
+            } catch (err) {
+                console.error('Failed to start call:', err);
+                resetButton();
+            }
+        }
+
+        async function endCall() {
+            if (activeChatSession) {
+                try {
+                    await activeChatSession.disconnectParticipant();
+                } catch (e) {
+                    console.warn('Error disconnecting:', e);
+                }
+            }
+            resetButton();
+        }
+
+        function resetButton() {
+            activeChatSession = null;
+            const btn = document.getElementById('callBtn');
+            btn.textContent = 'Call ZEB';
+            btn.disabled = false;
+            btn.onclick = startCall;
+        }
+
+        // Attach initial click handler once DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('callBtn').addEventListener('click', startCall);
         });
     </script>
 
