@@ -90,10 +90,17 @@ btnStart.addEventListener('click', async () => {
         // 5. Register observer once — handles session end and video tile binding
         meetingSession.audioVideo.addObserver({
             audioVideoDidStop(status) {
-                const ended = status.statusCode() === MeetingSessionStatusCode.MeetingEnded ||
-                    status.statusCode() === MeetingSessionStatusCode.Left;
-                if (ended) {
-                    setStatus('Call ended', '');
+                const code = status.statusCode();
+                const shouldReset =
+                    code === MeetingSessionStatusCode.MeetingEnded ||
+                    code === MeetingSessionStatusCode.Left ||
+                    code === MeetingSessionStatusCode.SignalingChannelClosedUnexpectedly ||
+                    code === MeetingSessionStatusCode.SignalingBadRequest ||
+                    code === MeetingSessionStatusCode.TaskFailed;
+
+                if (shouldReset) {
+                    const wasUnexpected = code === MeetingSessionStatusCode.SignalingChannelClosedUnexpectedly;
+                    setStatus(wasUnexpected ? 'Call disconnected unexpectedly' : 'Call ended', wasUnexpected ? 'error' : '');
                     setCallActive(false);
                     stopVideoLocal();
                     meetingSession = null;
