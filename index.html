@@ -807,6 +807,16 @@
                 });
 
                 chatSession.onMessage(({ data }) => {
+                    // Chat ended event fired by agent or contact flow
+                    if (data.ContentType === 'application/vnd.amazonaws.connect.event.chat.ended') {
+                        appendSystemEvent('Chat ended.');
+                        setChatStatus('Chat ended', '');
+                        setChatActive(false);
+                        chatSession = null;
+                        return;
+                    }
+
+                    // Only render text messages from agent/system
                     if (data.Type !== 'MESSAGE') return;
                     if (data.ParticipantRole === 'CUSTOMER') return;
                     if (data.ContentType === 'text/plain' || data.ContentType === 'text/markdown') {
@@ -821,13 +831,6 @@
                         clearTimeout(typingTimeout);
                         typingTimeout = setTimeout(() => typingIndicator.classList.remove('visible'), 3000);
                     }
-                });
-
-                chatSession.onChatDisconnected(() => {
-                    appendSystemEvent('Chat ended.');
-                    setChatStatus('Chat ended', '');
-                    setChatActive(false);
-                    chatSession = null;
                 });
 
                 chatSession.onConnectionBroken(() => {
